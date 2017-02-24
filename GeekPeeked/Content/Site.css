@@ -1,5 +1,5 @@
 ﻿body {
-    padding-top: 50px;
+    padding-top: 25px;
     padding-bottom: 20px;
 }
 
@@ -21,4 +21,23 @@ input,
 select,
 textarea {
     max-width: 280px;
+}
+
+.nominee-container {
+    padding: 2px 2px 2px 2px; 
+}
+
+.nominee-container-selected {
+    background-color: #df691a;
+    font-weight: bold;
+}
+
+.nominee-container-correct {
+    background-color: #5cb85c;
+    font-weight: bold;
+}
+
+.nominee-container-incorrect {
+    background-color: #d9534f;
+    font-weight: bold;
 }

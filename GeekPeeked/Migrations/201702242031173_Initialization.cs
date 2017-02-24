@@ -8,24 +8,6 @@ namespace GeekPeeked.Migrations
         public override void Up()
         {
             CreateTable(
-                "dbo.AcademyAwardsBallotPick",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Email = c.String(),
-                        VerificationCode = c.String(),
-                        IsVerfied = c.Boolean(nullable: false),
-                        ContestId = c.Int(nullable: false),
-                        AcademyAwardsCategoryId = c.Int(nullable: false),
-                        SelectedAcademyAwardsNomineeId = c.Int(nullable: false),
-                        CreatedBy = c.String(),
-                        CreatedDate = c.DateTime(nullable: false),
-                        ModifiedBy = c.String(),
-                        ModifiedDate = c.DateTime(),
-                    })
-                .PrimaryKey(t => t.Id);
-            
-            CreateTable(
                 "dbo.AcademyAwardsCategory",
                 c => new
                     {
@@ -82,18 +64,50 @@ namespace GeekPeeked.Migrations
                     })
                 .PrimaryKey(t => t.Id);
             
+            CreateTable(
+                "dbo.AcademyAwardsContestEntrySelection",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        ContestEntryId = c.Int(nullable: false),
+                        AcademyAwardsCategoryId = c.Int(nullable: false),
+                        SelectedAcademyAwardNomineeId = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.ContestEntry", t => t.ContestEntryId, cascadeDelete: true)
+                .Index(t => t.ContestEntryId);
+            
+            CreateTable(
+                "dbo.ContestEntry",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Email = c.String(),
+                        VerificationCode = c.String(),
+                        IsVerfied = c.Boolean(nullable: false),
+                        ContestId = c.Int(nullable: false),
+                        CreatedBy = c.String(),
+                        CreatedDate = c.DateTime(nullable: false),
+                        ModifiedBy = c.String(),
+                        ModifiedDate = c.DateTime(),
+                    })
+                .PrimaryKey(t => t.Id);
+            
         }
         
         public override void Down()
         {
+            DropForeignKey("dbo.AcademyAwardsContestEntrySelection", "ContestEntryId", "dbo.ContestEntry");
             DropForeignKey("dbo.AcademyAwardsCategory", "ContestId", "dbo.Contest");
             DropForeignKey("dbo.AcademyAwardsNominee", "AcademyAwardsCategoryId", "dbo.AcademyAwardsCategory");
+            DropIndex("dbo.AcademyAwardsContestEntrySelection", new[] { "ContestEntryId" });
             DropIndex("dbo.AcademyAwardsNominee", new[] { "AcademyAwardsCategoryId" });
             DropIndex("dbo.AcademyAwardsCategory", new[] { "ContestId" });
+            DropTable("dbo.ContestEntry");
+            DropTable("dbo.AcademyAwardsContestEntrySelection");
             DropTable("dbo.Contest");
             DropTable("dbo.AcademyAwardsNominee");
             DropTable("dbo.AcademyAwardsCategory");
-            DropTable("dbo.AcademyAwardsBallotPick");
         }
     }
 }

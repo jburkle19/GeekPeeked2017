@@ -1,0 +1,34 @@
+﻿@model UpdateContestViewModel
+
+@using (Html.BeginForm("Update", "Contest", FormMethod.Post, new { @id = "updateContestForm" }))
+{
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Update Contest Verification</h4>
+        </div>
+        <div class="modal-body">
+            <div class="form-items">
+                @Html.HiddenFor(m => m.ContestId)
+                <div class="form-group">
+                    <div>@Html.LabelFor(m => m.Email)</div>
+                    <div>
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Enter Your Email" })
+                        <div id="invalidEmail" class="text-danger" hidden="hidden"><strong>Email is required</strong></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div>@Html.LabelFor(m => m.VerificationCode)</div>
+                    <div>
+                        @Html.TextBoxFor(m => m.VerificationCode, new { @class = "form-control", placeholder = "Enter Your Verification Code" })
+                        <div id="invalidVerificationCode" class="text-danger " hidden="hidden"><strong>Verification Code is required</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button id="updateContestButton" type="submit" class="btn btn-primary" onclick="return submitUpdateContestForm();">Submit</button>
+        </div>
+    </div>
+}

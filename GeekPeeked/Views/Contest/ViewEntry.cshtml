@@ -1,0 +1,54 @@
+﻿@model ViewContestEntryViewModel
+
+@{
+    ViewBag.Title = "Geek Peeked > Contests > View Contest Entry";
+}
+
+<h1>@ViewBag.Title</h1>
+<hr />
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <h2>@Model.Contest.Title</h2>
+                <p>@Model.Contest.Objective</p>
+            </div>
+            @if (Model.Categories != null)
+            {
+                foreach (var category in Model.Categories)
+                {
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">@category.CategoryTitle</h3>
+                            </div>
+                            <div class="panel-body">
+                                @if (category.Nominees != null)
+                                {
+                                    foreach (var nominee in category.Nominees.OrderBy(n => n.NomineeText).OrderBy(n => n.SortOrder))
+                                    {
+                                        if (nominee.NomineeId == category.SelectedNomineeId)
+                                        {
+                                            <div class="nominee-container nominee-container-selected">
+                                                @nominee.NomineeText
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="nominee-container">
+                                                @nominee.NomineeText
+                                            </div>
+                                        }
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <a class="btn btn-primary btn-lg btn-block" href="@Url.Action("EditEntry", "Contest", new { contestEntryId = Model.ContestEntryId })">Update Entry</a>
+    </div>
+</div>

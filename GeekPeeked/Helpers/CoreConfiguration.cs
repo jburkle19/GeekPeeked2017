@@ -1,11 +1,33 @@
-﻿using System.Linq;
+﻿using System;
 using System.Configuration;
-using System.Collections.Generic;
 
 namespace GeekPeeked.Helpers
 {
     public class CoreConfiguration
     {
+        public static int? ActiveContestId
+        {
+            get
+            {
+                int result = 0;
+                if (ConfigurationManager.AppSettings["ActiveContestId"] != null && Int32.TryParse(ConfigurationManager.AppSettings["ActiveContestId"].ToString(), out result))
+                    return result;
+
+                return null; // default value
+            }
+        }
+        public static bool IsActiveContestSignUpOpen
+        {
+            get
+            {
+                bool result = false; // default value
+                if (ConfigurationManager.AppSettings["IsActiveContestSignUpOpen"] != null && Boolean.TryParse(ConfigurationManager.AppSettings["IsActiveContestSignUpOpen"].ToString(), out result))
+                    return result;
+
+                return false;
+            }
+        }
+
         public static string ErrorEmailAddress
         {
             get
@@ -99,6 +121,17 @@ namespace GeekPeeked.Helpers
                     bool.TryParse(ConfigurationManager.AppSettings["smtpTLS"].ToString(), out result);
 
                 return result;
+            }
+        }
+
+        public static string VerifyContestFormatURL
+        {
+            get
+            {
+                if (ConfigurationManager.AppSettings["verifyContestFormatString"] != null && !string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["verifyContestFormatString"].ToString()))
+                    return ConfigurationManager.AppSettings["verifyContestFormatString"].ToString();
+                else
+                    return string.Empty;
             }
         }
     }

@@ -15,7 +15,7 @@ namespace GeekPeeked.Models
     public class Contest : ITrackable
     {
         [Key]
-        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         public ContestType ContestType { get; set; }

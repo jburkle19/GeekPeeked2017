@@ -7,7 +7,7 @@ namespace GeekPeeked.Models
     public class AcademyAwardsNominee : ITrackable
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [ForeignKey("AcademyAwardsCategory")]

@@ -44,6 +44,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=4.3.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.4.3.0\lib\net45\Autofac.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Autofac.Integration.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.Mvc5.4.0.1\lib\net45\Autofac.Integration.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Autofac.Integration.Mvc.Owin, Version=4.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.Mvc5.Owin.4.0.1\lib\net45\Autofac.Integration.Mvc.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Autofac.Integration.Owin, Version=4.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.Owin.4.0.0\lib\net45\Autofac.Integration.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -57,6 +73,18 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -140,23 +168,34 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\ContestController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\_BaseController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\CoreConfiguration.cs" />
-    <Compile Include="Migrations\201702232012378_Initialization.cs" />
-    <Compile Include="Migrations\201702232012378_Initialization.Designer.cs">
-      <DependentUpon>201702232012378_Initialization.cs</DependentUpon>
+    <Compile Include="Migrations\201702242031173_Initialization.cs" />
+    <Compile Include="Migrations\201702242031173_Initialization.Designer.cs">
+      <DependentUpon>201702242031173_Initialization.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AcademyAwardsCategory.cs" />
+    <Compile Include="Models\AcademyAwardsContestEntrySelection.cs" />
     <Compile Include="Models\AcademyAwardsNominee.cs" />
-    <Compile Include="Models\AcademyAwardsBallotPick.cs" />
+    <Compile Include="Models\ContestEntry.cs" />
     <Compile Include="Models\Contest.cs" />
     <Compile Include="Models\GeekPeekedDbContext.cs" />
     <Compile Include="Models\Interfaces\ITrackable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\AcademyAwardsContestRepository.cs" />
+    <Compile Include="Repositories\ContestRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IAcademyAwardsContestRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IContestRespoitory.cs" />
+    <Compile Include="Repositories\Interfaces\_IBaseRepository.cs" />
+    <Compile Include="Repositories\_BaseRepository.cs" />
     <Compile Include="Services\EmailService.cs" />
+    <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\Alert.cs" />
+    <Compile Include="ViewModels\ContestViewModels.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
@@ -182,24 +221,24 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Repositories\Scripts\bootstrap.js" />
-    <Content Include="Repositories\Scripts\bootstrap.min.js" />
     <Content Include="ConnectionStrings.config" />
     <Content Include="AppSettings.config" />
     <Content Include="AppSettings.production.config" />
     <Content Include="ConnectionStrings.production.config" />
-    <None Include="Repositories\Scripts\jquery-1.10.2.intellisense.js" />
-    <Content Include="Repositories\Scripts\jquery-1.10.2.js" />
-    <Content Include="Repositories\Scripts\jquery-1.10.2.min.js" />
-    <None Include="Repositories\Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Repositories\Scripts\jquery.validate.js" />
-    <Content Include="Repositories\Scripts\jquery.validate.min.js" />
-    <Content Include="Repositories\Scripts\jquery.validate.unobtrusive.js" />
-    <Content Include="Repositories\Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Repositories\Scripts\modernizr-2.6.2.js" />
-    <Content Include="Repositories\Scripts\respond.js" />
-    <Content Include="Repositories\Scripts\respond.min.js" />
-    <Content Include="Repositories\Scripts\_references.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\jquery-1.10.2.js" />
+    <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\respond.js" />
+    <Content Include="Scripts\respond.min.js" />
+    <None Include="Scripts\_references.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -213,22 +252,26 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Scripts\jquery-1.10.2.min.map" />
+    <Content Include="Views\Contest\Index.cshtml" />
+    <Content Include="Views\Contest\SignUp.cshtml" />
+    <Content Include="Views\Contest\ViewEntry.cshtml" />
+    <Content Include="Views\Contest\_Update.cshtml" />
+    <Content Include="Views\Shared\_Alerts.cshtml" />
+    <Content Include="Views\Contest\EditEntry.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="ViewModels\" />
-    <Folder Include="Views\Contest\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
-    <Content Include="Repositories\Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201702232012378_Initialization.resx">
-      <DependentUpon>201702232012378_Initialization.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201702242031173_Initialization.resx">
+      <DependentUpon>201702242031173_Initialization.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

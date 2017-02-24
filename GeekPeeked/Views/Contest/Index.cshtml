@@ -1,0 +1,86 @@
+﻿@model GeekPeeked.ViewModels.ContestIndexViewModel
+@{
+    ViewBag.Title = "Geek Peeked > Contests";
+}
+
+<h1>@ViewBag.Title</h1>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <div class="jumbotron">
+            @if (Model.ActiveContestId != null)
+            {
+                if (Model.ContestSignUpActive)
+                {
+                    <h1>@Model.ActiveContest.Title</h1>
+                    <p>@Model.ActiveContest.Objective</p>
+                    <p><a class="btn btn-primary btn-lg" href="@Url.Action("SignUp", "Contest", new { contestId = Convert.ToInt32(Model.ActiveContestId) })">Sign Up Now!</a></p>
+                    <p><a class="updateModalButton" href="#updateModal" data-toggle="modal" data-target="#updateModal" data-url='@Url.Action("Update", new { contestId = Convert.ToInt32(Model.ActiveContestId) })'>Already have an entry?</a></p>
+                }
+                else
+                {
+                    <h1>@Model.ActiveContest.Title</h1>
+                    <p>@Model.ActiveContest.Objective</p>
+                    <p><a class="btn btn-primary btn-lg">View Current Standings/Results</a></p>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<div id="updateModal" class="modal">
+    <div class="modal-dialog updateModalDialog">
+    </div>
+</div>
+
+@section Scripts {
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('.updateModalButton').click(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: $(this).data('url'),
+                    success: function (data) {
+                        $('.updateModalDialog').html(data);
+                    },
+                    error: function (reponse) {
+                    }
+                });
+            });
+        });
+
+        function submitUpdateContestForm() {
+            //alert('submitUpdateContestForm()');
+            var form = $('#updateContestForm').removeData('validator').removeData('unobtrusiveValidation');
+            $.validator.unobtrusive.parse(form);
+
+            $('#invalidEmail').hide();
+            $('#invalidVerificationCode').hide();
+
+            var email = $('#Email').val();
+            //alert(email);
+            if (email.length <= 0) {
+                $('#invalidEmail').show();
+                return false;
+            }
+
+            var verificationCode = $('#VerificationCode').val();
+            //alert(verificationCode);
+            if (verificationCode.length <= 0) {
+                $('#invalidVerificationCode').show();
+                return false;
+            }
+
+            if ($('#updateContestForm').valid()) {
+                //alert('valid()');
+                return true;
+            } else {
+                //alert('invalid()');
+                return false;
+            }
+        }
+
+    </script>
+}

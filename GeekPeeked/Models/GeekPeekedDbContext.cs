@@ -10,9 +10,12 @@ namespace GeekPeeked.Models
         }
 
         public DbSet<Contest> Contests { get; set; }
+
         public DbSet<AcademyAwardsCategory> AcademyAwardsCategories { get; set; }
         public DbSet<AcademyAwardsNominee> AcademyAwardsNominees { get; set; }
-        public DbSet<AcademyAwardsBallotPick> AcademyAwardsBallotPicks { get; set; }
+
+        public DbSet<ContestEntry> ContestEntries { get; set; }
+        public DbSet<AcademyAwardsContestEntrySelection> AcademyAwardsContestEntrySelections { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

@@ -1,0 +1,97 @@
+﻿@model ContestSignUpViewModel
+
+@{
+    ViewBag.Title = "Geek Peeked > Contests > Sign Up";
+}
+
+<h1>@ViewBag.Title</h1>
+<hr />
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            @using (Html.BeginForm("SignUp", "Contest", FormMethod.Post, new { @id = "signUpContestForm" }))
+            {
+                @Html.HiddenFor(m => m.ContestId)
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <h2>@Model.Contest.Title</h2>
+                    <p>@Model.Contest.Objective</p>
+                </div>
+                if (Model.Categories != null)
+                {
+                    for (int i = 0; i < Model.Categories.Count; i++)
+                    {
+                        @Html.HiddenFor(m => Model.Categories[i].CategoryId)
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="panel panel-info">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">@Model.Categories[i].CategoryTitle</h3>
+                                </div>
+                                <div class="panel-body">
+                                    @if (Model.Categories[i].Nominees != null)
+                                    {
+                                        foreach (var nominee in Model.Categories[i].Nominees.OrderBy(n => n.NomineeText).OrderBy(n => n.SortOrder))
+                                        {
+                                            <div class="nominee-container">
+                                                @Html.RadioButtonFor(m => Model.Categories[i].SelectedNomineeId, nominee.NomineeId) &nbsp;&nbsp; @nominee.NomineeText
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <a class="btn btn-primary btn-lg btn-block signUpModalButton" href="#signUpModal" data-toggle="modal" data-target="#signUpModal">Submit Entry</a>
+                </div>
+
+                <div id="signUpModal" class="modal">
+                    <div class="modal-dialog signUpModalDialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title">Submit Entry</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-items">
+                                    <div class="form-group">
+                                        <div>@Html.LabelFor(m => m.Email)</div>
+                                        <div>
+                                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Enter Your Email" })
+                                        </div>
+                                        <strong>@Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('.signUpModalButton').click(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: $(this).data('url'),
+                    success: function (data) {
+                        $('.signUpModal').html(data);
+                    },
+                    error: function (reponse) {
+                    }
+                });
+            });
+        });
+
+    </script>
+}
