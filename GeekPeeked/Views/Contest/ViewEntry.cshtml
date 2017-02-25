@@ -4,9 +4,12 @@
     ViewBag.Title = "Geek Peeked > Contests > View Contest Entry";
 }
 
-<h1>@ViewBag.Title</h1>
-<hr />
+@Html.Partial("_Alerts")
 <div class="container-fluid">
+    <div class="row">
+        <div class="pull-right"><a class="" href="@Url.Action("Index", "Contest")">Back to Contests</a></div>
+        <div><h1>@ViewBag.Title</h1><hr /></div>
+    </div>
     <div class="row">
         <div class="col-md-12">
             <div class="col-lg-12 col-md-12 col-sm-12">
@@ -49,6 +52,9 @@
         </div>
     </div>
     <div class="col-lg-12 col-md-12 col-sm-12">
-        <a class="btn btn-primary btn-lg btn-block" href="@Url.Action("EditEntry", "Contest", new { contestEntryId = Model.ContestEntryId })">Update Entry</a>
+        <a class="btn btn-primary btn-lg btn-block" href="@Url.Action("EditEntry", "Contest", new { contestId = Model.Contest.Id, email = Model.ContestEntry.Email, code = Model.ContestEntry.VerificationCode })">Update Entry</a>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 pull-right">
+        <a class="" href="@Url.Action("Index", "Contest")">Back to Contests</a>
     </div>
 </div>

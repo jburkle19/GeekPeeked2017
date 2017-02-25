@@ -108,15 +108,20 @@ namespace GeekPeeked.Controllers
             if (contest != null && contest.Id == contestId)
             {
                 var contestEntry = this._contestRepository.GetContestEntry(contest.Id, email, code);
-                bool result = this._contestRepository.VerifyContestEntry(contest.Id, email, code);
-                this._contestRepository.Save();
-
-                if (result)
+                if (contestEntry != null && contestEntry.Email == email && contestEntry.VerificationCode == code)
                 {
-                    Success("Successfully verified your email address. Your contest entry has been accepted. Good luck!", true);
+                    bool result = this._contestRepository.VerifyContestEntry(contest.Id, email, code);
+                    this._contestRepository.Save();
 
-                    return RedirectToAction("ViewEntry", "Contest", new { contestEntryId = contestEntry.Id });
+                    if (result)
+                    {
+                        Success("Successfully verified your email address. Your contest entry has been accepted. Good luck!", true);
+
+                        return RedirectToAction("ViewEntry", "Contest", new { contestId = contest.Id, email = email, code = code });
+                    }
                 }
+                else
+                    Danger("Failed to verify your email. Click the link sent to your email or submit a new contest entry", true);
             }
 
             Danger("Failed to verify your email. Click the link sent to your email or submit a new contest entry", true);
@@ -138,7 +143,7 @@ namespace GeekPeeked.Controllers
         public ActionResult Update(UpdateContestViewModel viewModel)
         {
             if (ModelState.IsValid)
-                return RedirectToAction("Edit", "Contest", new { contestId = viewModel.ContestId, email = viewModel.Email, verificationCode = viewModel.VerificationCode });
+                return RedirectToAction("EditEntry", "Contest", new { contestId = viewModel.ContestId, email = viewModel.Email, code = viewModel.VerificationCode });
             else
                 Danger("Failed to find contest entry for that email address and verification code", true);
 
@@ -146,70 +151,85 @@ namespace GeekPeeked.Controllers
         }
 
         [HttpGet]
-        public ActionResult ViewEntry(int contestEntryId)
+        public ActionResult ViewEntry(int contestId, string email, string code)
         {
             ViewContestEntryViewModel viewModel = new ViewContestEntryViewModel();
-            viewModel.ContestEntryId = contestEntryId;
 
-            var contestEntry = this._contestRepository.GetContestEntry(contestEntryId);
-            viewModel.Contest = this._contestRepository.GetContest(contestEntry.ContestId);
-
-            viewModel.Categories = new List<ContestCategoryViewModel>();
-
-            foreach (var category in viewModel.Contest.AcademyAwardsCategories)
+            viewModel.ContestEntry = this._contestRepository.GetContestEntry(contestId, email, code);
+            if (viewModel.ContestEntry != null && viewModel.ContestEntry.Email == email && viewModel.ContestEntry.VerificationCode == code)
             {
-                ContestCategoryViewModel cat = new ContestCategoryViewModel();
-                cat.CategoryId = category.Id;
-                cat.CategoryTitle = category.CategoryTitle;
-                cat.SortOrder = category.SortOrder;
-                cat.Nominees = new List<ContestNomineeViewModel>();
+                viewModel.ContestEntryId = viewModel.ContestEntry.Id;
+                viewModel.Contest = this._contestRepository.GetContest(viewModel.ContestEntry.ContestId);
 
-                var selection = contestEntry.AcademyAwardsContestEntrySelections.FirstOrDefault(c => c.AcademyAwardsCategoryId == category.Id);
-                if(selection != null)
-                    cat.SelectedNomineeId = selection.SelectedAcademyAwardNomineeId;
+                viewModel.Categories = new List<ContestCategoryViewModel>();
 
-                foreach (var nominee in category.AcademyAwardsNominees)
+                foreach (var category in viewModel.Contest.AcademyAwardsCategories)
                 {
-                    cat.Nominees.Add(new ContestNomineeViewModel() { NomineeId = nominee.Id, NomineeText = nominee.NomineeText, SortOrder = nominee.SortOrder });
+                    ContestCategoryViewModel cat = new ContestCategoryViewModel();
+                    cat.CategoryId = category.Id;
+                    cat.CategoryTitle = category.CategoryTitle;
+                    cat.SortOrder = category.SortOrder;
+                    cat.Nominees = new List<ContestNomineeViewModel>();
+
+                    var selection = viewModel.ContestEntry.AcademyAwardsContestEntrySelections.FirstOrDefault(c => c.AcademyAwardsCategoryId == category.Id);
+                    if (selection != null)
+                        cat.SelectedNomineeId = selection.SelectedAcademyAwardNomineeId;
+
+                    foreach (var nominee in category.AcademyAwardsNominees)
+                    {
+                        cat.Nominees.Add(new ContestNomineeViewModel() { NomineeId = nominee.Id, NomineeText = nominee.NomineeText, SortOrder = nominee.SortOrder });
+                    }
+
+                    viewModel.Categories.Add(cat);
                 }
 
-                viewModel.Categories.Add(cat);
+                return View(viewModel);
             }
+            else
+                Danger("Invalid verification code and email address. Click the link sent to your email or submit a new contest entry", true);
 
-            return View(viewModel);
+            return RedirectToAction("Index", "Contest");
         }
 
         [HttpGet]
-        public ActionResult EditEntry(int contestEntryId)
+        public ActionResult EditEntry(int contestId, string email, string code)
         {
             EditContestEntryViewModel viewModel = new EditContestEntryViewModel();
-            viewModel.ContestEntryId = contestEntryId;
-            viewModel.ContestEntry = this._contestRepository.GetContestEntry(contestEntryId);
-            viewModel.Contest = this._contestRepository.GetContest(viewModel.ContestEntry.ContestId);
-
-            viewModel.Categories = new List<ContestCategoryViewModel>();
-
-            foreach (var category in viewModel.Contest.AcademyAwardsCategories)
+            
+            viewModel.ContestEntry = this._contestRepository.GetContestEntry(contestId, email, code);
+            if (viewModel.ContestEntry != null && viewModel.ContestEntry.Email == email && viewModel.ContestEntry.VerificationCode == code)
             {
-                ContestCategoryViewModel cat = new ContestCategoryViewModel();
-                cat.CategoryId = category.Id;
-                cat.CategoryTitle = category.CategoryTitle;
-                cat.SortOrder = category.SortOrder;
-                cat.Nominees = new List<ContestNomineeViewModel>();
+                viewModel.ContestEntryId = viewModel.ContestEntry.Id;
+                viewModel.Contest = this._contestRepository.GetContest(viewModel.ContestEntry.ContestId);
 
-                var selection = viewModel.ContestEntry.AcademyAwardsContestEntrySelections.FirstOrDefault(c => c.AcademyAwardsCategoryId == category.Id);
-                if(selection != null)
-                    cat.SelectedNomineeId = selection.SelectedAcademyAwardNomineeId;
+                viewModel.Categories = new List<ContestCategoryViewModel>();
 
-                foreach (var nominee in category.AcademyAwardsNominees)
+                foreach (var category in viewModel.Contest.AcademyAwardsCategories)
                 {
-                    cat.Nominees.Add(new ContestNomineeViewModel() { NomineeId = nominee.Id, NomineeText = nominee.NomineeText, SortOrder = nominee.SortOrder });
+                    ContestCategoryViewModel cat = new ContestCategoryViewModel();
+                    cat.CategoryId = category.Id;
+                    cat.CategoryTitle = category.CategoryTitle;
+                    cat.SortOrder = category.SortOrder;
+                    cat.Nominees = new List<ContestNomineeViewModel>();
+
+                    var selection = viewModel.ContestEntry.AcademyAwardsContestEntrySelections.FirstOrDefault(c => c.AcademyAwardsCategoryId == category.Id);
+                    if (selection != null)
+                        cat.SelectedNomineeId = selection.SelectedAcademyAwardNomineeId;
+
+                    foreach (var nominee in category.AcademyAwardsNominees)
+                    {
+                        cat.Nominees.Add(new ContestNomineeViewModel() { NomineeId = nominee.Id, NomineeText = nominee.NomineeText, SortOrder = nominee.SortOrder });
+                    }
+
+                    viewModel.Categories.Add(cat);
                 }
 
-                viewModel.Categories.Add(cat);
+                return View(viewModel);
             }
+            else
+                Danger("Invalid verification code and email address. Click the link sent to your email or submit a new contest entry", true);
 
-            return View(viewModel);
+            return RedirectToAction("Index", "Contest");
         }
 
         [HttpPost]
@@ -235,7 +255,7 @@ namespace GeekPeeked.Controllers
 
             Success("Successfully updated your contest entry", true);
 
-            return RedirectToAction("ViewEntry", "Contest", new { contestEntryId = entry.Id });
+            return RedirectToAction("ViewEntry", "Contest", new { contestId = entry.ContestId, email = entry.Email, code = entry.VerificationCode });
         }
     }
 }
